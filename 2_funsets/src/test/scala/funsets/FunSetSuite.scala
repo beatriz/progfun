@@ -77,6 +77,9 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+
+    val set1 = (x: Int) => x == 1 || x == 3 || x == 4 || x == 5 || x == 7 || x == 1000
+    val set2 = (x: Int) => x > 0 && x < 5
   }
 
   /**
@@ -110,5 +113,53 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("diff of {1,3,4,5,7,1000} and {1,2,3,4}") {
+    new TestSets {
+      val s = diff(set1, set2)
+//      assertResult("{[5,7,1000]}")(s.toString())
+      assert(contains(s, 5))
+      assert(contains(s, 7))
+      assert(contains(s, 1000))
+      assert(!contains(s, 1))
+      assert(!contains(s, 3))
+      assert(!contains(s, 4))
+    }
+  }
+
+  test("filter of {1,3,4,5,7,1000} for _ < 5") {
+    new TestSets {
+      var s = filter(set1, _ < 5)
+      assert(contains(s, 1))
+      assert(contains(s, 3))
+      assert(contains(s, 4))
+      assert(!contains(s, 5))
+      assert(!contains(s, 7))
+      assert(!contains(s, 1000))
+    }
+  }
+
+  test("forall: {1,3,4,5,7,1000}") {
+    new TestSets {
+      assert(forall(set1, _ < 5) == false)
+    }
+  }
+
+  test("exists 2 not in set1") {
+    new TestSets {
+      assert(exists(set1, (x: Int) => x == 2) == false)
+    }
+  }
+
+  test("map") {
+    new TestSets {
+      val s = map(set1, (x: Int) => x - 1)
+      assert(contains(s, 0))
+      assert(contains(s, 2))
+      assert(contains(s, 3))
+      assert(contains(s, 4))
+      assert(contains(s, 6))
+      assert(contains(s, 999))
+    }
+  }
 
 }
